@@ -1,0 +1,81 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# R Project:
+
+## Introduction
+
+The following dataset provides information related to births in the United States.
+
+## Questions
+
+1.  Do we see a clear increase in births over the years?
+2.  Does the education level of the mother influence the number of babies born?
+3.  Is there a correlation between a baby's birth weight and a mother's age?
+
+## Q1: Total US births from 2016 to 2021
+
+```{r}
+# Upload data and define variables 
+library(readr)
+us_births_2016_2021 <- read_csv("data/us_births_2016_2021.csv")
+View(us_births_2016_2021)
+
+year <- us_births_2016_2021[,"Year"]
+number_of_births <- us_births_2016_2021[,"Number of Births"]
+
+```
+
+``` R
+library(readr)
+us_births_2016_2021 <- read_csv("data/us_births_2016_2021.csv")
+View(us_births_2016_2021)
+
+year <- us_births_2016_2021[,"Year"]
+number_of_births <- us_births_2016_2021[,"Number of Births"]
+```
+
+```{r}
+# Group years and their respective total births by making matrix
+year_numberofbirths <- cbind(year, number_of_births)
+
+# in-efficiently determine how many total births per year 
+births_2016 <- year_numberofbirths[year_numberofbirths$Year==2016,]
+totalbirths_2016 <- colSums(births_2016)
+finaltotalbirths_2016 <- totalbirths_2016[2]
+
+births_2017 <- year_numberofbirths[year_numberofbirths$Year==2017,]
+totalbirths_2017 <- colSums(births_2017)
+finaltotalbirths_2017 <- totalbirths_2017[2]
+
+births_2018 <- year_numberofbirths[year_numberofbirths$Year==2018,]
+totalbirths_2018 <- colSums(births_2018)
+finaltotalbirths_2018 <- totalbirths_2018[2]
+
+births_2019 <- year_numberofbirths[year_numberofbirths$Year==2019,]
+totalbirths_2019 <- colSums(births_2019)
+finaltotalbirths_2019 <- totalbirths_2019[2]
+
+births_2020 <- year_numberofbirths[year_numberofbirths$Year==2020,]
+totalbirths_2020 <- colSums(births_2020)
+finaltotalbirths_2020 <- totalbirths_2020[2]
+
+births_2021 <- year_numberofbirths[year_numberofbirths$Year==2021,]
+totalbirths_2021 <- colSums(births_2021)
+finaltotalbirths_2021 <- totalbirths_2021[2]
+
+#Make vectors for the graph
+
+xValue <- 2016:2021
+yValue <- c(3945853, 3855479, 3791707, 3747531, 3613633, 3664277)
+data <- data.frame(xValue,yValue)
+
+# Plot
+ggplot(data, aes(x=xValue, y=yValue)) +
+  geom_line()+
+  ggtitle("Total number of Births in the US from 2016 to 2021")+
+  xlab("Year")+
+  ylab("Total Number of Births")
+```

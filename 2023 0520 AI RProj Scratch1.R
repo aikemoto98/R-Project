@@ -1,0 +1,56 @@
+  # R Project: Annie Scratch 1
+  
+# Upload data and define variables 
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+
+us_births_2016_2021 <- read_csv("data/us_births_2016_2021.csv")
+View(us_births_2016_2021)
+
+year <- us_births_2016_2021[,"Year"]
+number_of_births <- us_births_2016_2021[,"Number of Births"]
+
+us_births_2016_2021 <- read_csv("data/us_births_2016_2021.csv")
+View(us_births_2016_2021)
+
+# in-efficiently determine how many total births per year v2
+
+#subset original data into DF containing 'Year' and 'Number of Births' cols
+yearNumBirths <- us_births_2016_2021[c('Year','Number of Births')]
+
+ageEduWeight <- us_births_2016_2021[c(5,8,9)]
+
+#Do not be lazy and call it something other than testDF
+yearBirthDF <- yearNumBirths %>% #create new DF that is based off yearNumBirths
+  group_by(Year) %>% #Group by year col
+  summarise(Births = sum(`Number of Births`)) #sum all values in each year
+
+eduAgeDF <- ageEduWeight %>% 
+  group_by(`Education Level of Mother`) %>%
+  summarise(Age = sum(`Average Age of Mother (years)`)/n()) 
+
+
+#Make vectors for the graph
+xYears <- c(yearBirthDF$Year)
+yBirths <- c(yearBirthDF$Births)
+
+xEdu <- c(eduAgeDF$`Education Level of Mother`)
+yAge <- c(eduAgeDF$Age)
+
+# Plot
+ggplot(yearBirthDF, aes(x=xYears, y=yBirths)) +
+  geom_line()+
+  ggtitle("Total number of Births in the US from 2016 to 2021")+
+  xlab("Year")+
+  ylab("Total Number of Births")
+
+
+ggplot(eduAgeDF, aes(x=xEdu, y=yAge,group=1)) +#add group = 1 to make work
+  geom_line()+
+  ggtitle("Birth Trend of Mother's Age in Relation to Education")+
+  xlab("Education")+
+  ylab("Age of Mother")+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+

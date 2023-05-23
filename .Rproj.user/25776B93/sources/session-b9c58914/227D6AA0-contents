@@ -1,0 +1,39 @@
+
+
+#Correlation between Mother's Education Level with Averaged Baby Weight 
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+#Retrieve dataset and define in variable
+us_births_2016_2021 <- read_csv("data/us_births_2016_2021.csv")
+View(us_births_2016_2021)
+
+#Create data subset with only Education (name), Code Level, Baby Weight
+eduWeight <- us_births_2016_2021[c(5,6,9)]
+
+#Create another subset that groups Code Level and Averages Baby Weight (per level)
+eduWeightDF <- eduWeight %>% 
+  group_by(`Education Level Code`) %>%
+  summarise(Weight = sum(`Average Birth Weight (g)`)/n()) 
+
+#TEST
+#xEduCode <- c(eduWeightDF$`Education Level Code`)
+xEduCodefinal <- subset(eduWeightDF, `Education Level Code`> 0)
+#Took out -9 Code Level because dind't look pretty on graph (also unknown or unstated education)
+
+
+#Define vectors for plot 
+xEduCode <- c(xEduCodefinal$`Education Level Code`)
+yWeight <- c(xEduCodefinal$Weight)
+
+# Plot
+ggplot(xEduCodefinal, aes(x=xEduCode, y=yWeight)) +
+  geom_bar(stat = "identity")+
+  ggtitle("Averaged Baby Weight to Education Code Level")+
+  xlab("Education Level Code")+
+  ylab("Averaged Baby Weight (g)")+
+  coord_cartesian(ylim = c(3000, 3500))
+  #scale_y_continuous(limits = c(2000,4000)) 
+

@@ -1,0 +1,27 @@
+
+
+## R Project Draft v2 
+
+## Q1: Graph the total number births by year 
+
+# Upload data and define variables 
+library(readr)
+us_births_2016_2021 <- read_csv("data/us_births_2016_2021.csv")
+
+#Group the years and number of births 
+year_Numberofbirths <- us_births_2016_2021[c('Year','Number of Births')]
+
+#Create new data frame for births and years 
+yearbirthDF <- year_Numberofbirths %>% 
+  group_by(Year) %>% 
+  summarize(Births = sum(`Number of Births`))
+
+#plot 
+xYears <- c(yearbirthDF$Year)
+yBirths <- c(yearbirthDF$Births)
+
+ggplot(yearbirthDF, aes(x=xYears, y=yBirths) +
+   geom_line()+
+   ggtitle("Total number of Births in the US from 2016 to 2021")+
+   xlab("Year")+
+   ylab("Total Number of Births")

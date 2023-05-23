@@ -1,0 +1,76 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# R Project
+
+## Introduction
+
+## Questions
+
+## Retrieve dataset and define necessary functions
+
+```{r}
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+us_births_2016_2021 <- read_csv("data/us_births_2016_2021.csv")
+View(us_births_2016_2021)
+```
+
+## Q1: How does the number of births change from 2016 to 2021? 
+
+```{r}
+#Group the years and number of births 
+year_Numberofbirths <- us_births_2016_2021[c('Year','Number of Births')]
+
+#Create new data frame for births and years 
+yearbirthDF <- year_Numberofbirths %>% 
+  group_by(Year) %>% 
+  summarize(Births = sum(`Number of Births`))
+
+#plot 
+xYears <- c(yearbirthDF$Year)
+yBirths <- c(yearbirthDF$Births)
+
+ggplot(yearbirthDF, aes(x=xYears, y=yBirths)) +
+   geom_line()+
+   ggtitle("Total number of Births in the US from 2016 to 2021")+
+   xlab("Year")+
+   ylab("Total Number of Births")
+   
+```
+
+## Q2: What is the correlation between Mother's Education Level and Age to Baby Weight?
+
+```{r}
+#Group the education level, code and age 
+ageEduWeight <- us_births_2016_2021[c(6,8,9)]
+
+ageEduDF <- ageEduWeight %>% 
+  group_by(`Education Level Code`) %>%
+  summarise(Age = sum(`Average Age of Mother (years)`)/n()) 
+
+eduWeightDF <- ageEduWeight %>% 
+  group_by(`Education Level Code`) %>%
+  summarise(Weight = sum(`Average Birth Weight (g)`)/n()) 
+
+#Make new dataframe to remove -9 level code
+ageEdu_adj <- subset(ageEduDF, `Education Level Code`> 0)
+
+
+xEdu <- c(ageEdu_adj$`Education Level Code`)
+yAge <- c(ageEdu_adj$Age)
+
+
+ggplot(ageEdu_adj, aes(x=xEdu, y=yAge,group=1)) +#add group = 1 to make work
+    geom_bar(stat = "identity")+
+    ggtitle("Mother's Education Level in Relation to Averaged Age")+
+    xlab("Education Level of Code")+
+    ylab("Average Age of Mother (years)")+
+    coord_cartesian(ylim = c(20, 40))
+#    #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
